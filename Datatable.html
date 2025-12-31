@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Orange Datatable - Fully Functional</title>
+    <title>Premium Orange Datatable - Full Features</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
@@ -48,9 +48,19 @@
             flex-wrap: wrap;
         }
 
+        /* Search & Page Length Group */
+        .controls-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 300px;
+        }
+
         .search-control {
             position: relative;
-            min-width: 300px;
+            max-width: 300px;
+            flex: 1;
         }
         .search-control i {
             position: absolute;
@@ -73,6 +83,34 @@
             box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
             background: #fff;
         }
+
+        /* Per Page Select */
+.length-control select {
+    height: 42px;
+    width: 70px; /* Memberikan lebar pasti agar tidak terlalu sempit */
+    border-radius: 8px;
+    border: 1px solid var(--brand-border);
+    background-color: var(--bg-light);
+    font-size: 14px;
+    padding: 0 30px 0 12px; /* Padding kanan ditambah (30px) untuk ruang arrow */
+    color: var(--brand-gray);
+    cursor: pointer;
+    outline: none;
+    
+    /* Menambahkan icon panah kustom agar jaraknya bisa diatur */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center; /* Mengatur posisi panah 10px dari kanan */
+    background-size: 12px;
+    appearance: none; /* Menghilangkan panah default browser */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.length-control select:focus {
+    border-color: var(--brand-orange);
+    background-color: #fff;
+}
 
         /* --- TABLE --- */
         .table thead th {
@@ -132,9 +170,14 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
+            white-space: nowrap;
         }
         .btn-add:hover { background: var(--brand-orange-dark); color: #fff; }
-
+        
+        #customLengthInput {
+        	text-align:center;
+        }
+        
         .btn-export-pill {
             background: white;
             border: 1px solid var(--brand-border);
@@ -143,8 +186,8 @@
             font-size: 14px;
             color: var(--brand-gray);
             font-weight: 500;
+            white-space: nowrap;
         }
-        .btn-export-pill:hover { background: var(--bg-light); }
 
         .icon-box {
             width: 38px; height: 38px;
@@ -156,7 +199,7 @@
         }
 
         /* Hide Default DT elements */
-        .dataTables_filter, .dt-buttons { display: none; }
+        .dataTables_filter, .dt-buttons, .dataTables_length { display: none; }
     </style>
 </head>
 <body>
@@ -165,9 +208,20 @@
     <div class="table-card">
         
         <div class="header-toolbar">
-            <div class="search-control">
-                <i class='bx bx-search'></i>
-                <input type="text" id="customSearchInput" class="form-control" placeholder="Cari data produk...">
+            <div class="controls-left">
+                <div class="length-control">
+    <select id="customLengthInput">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+    </select>
+</div>
+
+                <div class="search-control">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="customSearchInput" class="form-control" placeholder="Cari data...">
+                </div>
             </div>
             
             <div class="d-flex gap-2">
@@ -230,6 +284,21 @@
                         <td class="fw-semibold">Rp 24.999.000</td>
                         <td class="text-end"><button class="btn btn-sm text-secondary"><i class='bx bx-dots-vertical-rounded fs-5'></i></button></td>
                     </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-box"><i class='bx bx-laptop'></i></div>
+                                <div>
+                                    <div class="fw-bold">MacBook Pro M3</div>
+                                    <small class="text-muted">SKU: MB-M3</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Elektronik</td>
+                        <td>12 Unit</td>
+                        <td class="fw-semibold">Rp 32.000.000</td>
+                        <td class="text-end"><button class="btn btn-sm text-secondary"><i class='bx bx-dots-vertical-rounded fs-5'></i></button></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -244,7 +313,6 @@
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -258,7 +326,7 @@
 <script>
     $(document).ready(function() {
         const table = $('#premiumTable').DataTable({
-            dom: 'Bfrtip', // Inisialisasi Buttons
+            dom: 'Bfrtip',
             buttons: [
                 { extend: 'excel', className: 'd-none', title: 'Data Produk' },
                 { extend: 'pdf', className: 'd-none', title: 'Data Produk' },
@@ -271,20 +339,24 @@
                     previous: '<i class="bx bx-chevron-left"></i>'
                 }
             },
-            pageLength: 10,
+            pageLength: 10, // Default awal
             drawCallback: function() {
-                // Pindahkan info & pagination ke lokasi kustom
                 $('.dataTables_info').appendTo('#infoPlacement');
                 $('.dataTables_paginate').appendTo('#pagingPlacement');
             }
         });
 
-        // FUNGSI SEARCH (Koneksi ke Input Kustom)
+        // 1. FUNGSI PER PAGE (Koneksi ke Select Kustom)
+        $('#customLengthInput').on('change', function() {
+            table.page.len( $(this).val() ).draw();
+        });
+
+        // 2. FUNGSI SEARCH
         $('#customSearchInput').on('keyup', function() {
             table.search(this.value).draw();
         });
 
-        // FUNGSI EXPORT (Koneksi ke Dropdown Kustom)
+        // 3. FUNGSI EXPORT
         $('#btn-print').on('click', function() { table.button(2).trigger(); });
         $('#btn-excel').on('click', function() { table.button(0).trigger(); });
         $('#btn-pdf').on('click', function() { table.button(1).trigger(); });
