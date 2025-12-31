@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Orange Datatable - Final Polish</title>
+    <title>Premium Orange Datatable - Fully Functional</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
 
     <style>
         :root {
             --brand-orange: #FF6B00;
+            --brand-orange-dark: #E66000;
             --brand-orange-soft: #FFF1E7;
             --brand-dark: #1E293B;
             --brand-gray: #64748B;
@@ -24,29 +26,31 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #F1F5F9;
-            padding: 3rem 1rem;
+            padding: 2rem 1rem;
         }
 
         .table-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--brand-border);
             overflow: hidden;
         }
 
-        /* --- HEADER ACTIONS --- */
+        /* --- HEADER TOOLBAR --- */
         .header-toolbar {
             padding: 1.25rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--brand-border);
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .search-control {
             position: relative;
-            width: 320px;
+            min-width: 300px;
         }
         .search-control i {
             position: absolute;
@@ -54,13 +58,15 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--brand-gray);
+            z-index: 10;
         }
         .search-control input {
-            padding-left: 40px;
+            padding-left: 40px !important;
             height: 42px;
             border-radius: 8px;
             border: 1px solid var(--brand-border);
             background: var(--bg-light);
+            font-size: 14px;
         }
         .search-control input:focus {
             border-color: var(--brand-orange);
@@ -68,7 +74,7 @@
             background: #fff;
         }
 
-        /* --- TABLE STYLE --- */
+        /* --- TABLE --- */
         .table thead th {
             background-color: var(--bg-light);
             color: var(--brand-gray);
@@ -77,97 +83,80 @@
             font-weight: 700;
             letter-spacing: 0.8px;
             padding: 14px 20px;
-            border-bottom: 1px solid var(--brand-border);
         }
         .table tbody td {
             padding: 14px 20px;
             vertical-align: middle;
-            border-bottom: 1px solid var(--brand-border);
             font-size: 14px;
+            border-bottom: 1px solid var(--brand-border);
         }
 
-        /* --- FOOTER & PAGINATION (FIXED & TIDY) --- */
+        /* --- FOOTER & PAGINATION --- */
         .table-footer {
-            padding: 1.25rem 1.5rem; /* Memberikan ruang napas yang cukup */
+            padding: 1.25rem 1.5rem;
             display: flex;
-            justify-content: space-between; /* Memaksa info kiri, pagination kanan */
+            justify-content: space-between;
             align-items: center;
-            background: white;
-            border-top: none;
+            border-top: 1px solid var(--brand-border);
         }
 
-        /* Info Text */
         .dataTables_info {
             font-size: 13px;
             color: var(--brand-gray);
-            padding-top: 0 !important; /* Reset default DT padding */
         }
 
-        /* Pagination Style */
-        .pagination {
-            margin-bottom: 0;
-            gap: 4px;
-        }
+        .pagination { margin: 0; gap: 4px; }
         .page-item .page-link {
             border: none;
             background-color: var(--bg-light);
             color: var(--brand-dark);
             border-radius: 6px !important;
             font-size: 13px;
-            font-weight: 500;
             min-width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
         }
         .page-item.active .page-link {
             background-color: var(--brand-orange) !important;
             color: white !important;
-            box-shadow: 0 4px 8px rgba(255, 107, 0, 0.25);
-        }
-        .page-item:not(.active) .page-link:hover {
-            background-color: var(--brand-orange-soft);
-            color: var(--brand-orange);
-        }
-        .page-item.disabled .page-link {
-            background-color: transparent;
-            color: #CBD5E1;
         }
 
-        /* --- UI COMPONENTS --- */
-        .badge-status {
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .bg-active { background: #DCFCE7; color: #166534; }
-        .bg-inactive { background: #F1F5F9; color: #475569; }
-
+        /* --- COMPONENTS --- */
         .btn-add {
             background: var(--brand-orange);
             color: #fff;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            transition: 0.2s;
         }
-        .btn-add:hover { background: var(--brand-orange-dark); transform: translateY(-1px); color: #fff; }
+        .btn-add:hover { background: var(--brand-orange-dark); color: #fff; }
 
-        /* Icon Container */
+        .btn-export-pill {
+            background: white;
+            border: 1px solid var(--brand-border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--brand-gray);
+            font-weight: 500;
+        }
+        .btn-export-pill:hover { background: var(--bg-light); }
+
         .icon-box {
-            width: 36px; height: 36px;
+            width: 38px; height: 38px;
             background: var(--brand-orange-soft);
             color: var(--brand-orange);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
         }
+
+        /* Hide Default DT elements */
+        .dataTables_filter, .dt-buttons { display: none; }
     </style>
 </head>
 <body>
@@ -178,13 +167,21 @@
         <div class="header-toolbar">
             <div class="search-control">
                 <i class='bx bx-search'></i>
-                <input type="text" id="customSearch" class="form-control" placeholder="Cari nama produk...">
+                <input type="text" id="customSearchInput" class="form-control" placeholder="Cari data produk...">
             </div>
             
             <div class="d-flex gap-2">
-                <button class="btn border-0 text-secondary fw-medium fs-7">
-                    <i class='bx bx-export me-1'></i> Export
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-export-pill dropdown-toggle shadow-none" data-bs-toggle="dropdown">
+                        <i class='bx bx-export me-1'></i> Export
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                        <li><a class="dropdown-item py-2" href="javascript:void(0);" id="btn-print"><i class='bx bx-printer me-2'></i> Print</a></li>
+                        <li><a class="dropdown-item py-2" href="javascript:void(0);" id="btn-excel"><i class='bx bx-file me-2'></i> Excel</a></li>
+                        <li><a class="dropdown-item py-2" href="javascript:void(0);" id="btn-pdf"><i class='bx bxs-file-pdf me-2'></i> PDF</a></li>
+                    </ul>
+                </div>
+                
                 <button class="btn-add">
                     <i class='bx bx-plus me-1'></i> Tambah Baru
                 </button>
@@ -192,75 +189,81 @@
         </div>
 
         <div class="table-responsive">
-            <table id="mainTable" class="table table-hover">
+            <table id="premiumTable" class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th width="40">ID</th>
                         <th>Info Produk</th>
                         <th>Kategori</th>
+                        <th>Stok</th>
                         <th>Harga</th>
-                        <th>Status</th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>#01</td>
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                <div class="icon-box"><i class='bx bx-package'></i></div>
+                                <div class="icon-box"><i class='bx bx-shopping-bag'></i></div>
                                 <div>
-                                    <div class="fw-bold">Premium Headphone Z1</div>
-                                    <small class="text-muted">SKU: HP-001</small>
+                                    <div class="fw-bold">Nike Air Max 2024</div>
+                                    <small class="text-muted">SKU: NK-990</small>
                                 </div>
                             </div>
                         </td>
-                        <td>Elektronik</td>
-                        <td class="fw-semibold">Rp 1.500.000</td>
-                        <td><span class="badge-status bg-active">Active</span></td>
-                        <td class="text-end">
-                            <button class="btn btn-sm text-secondary p-0"><i class='bx bx-dots-vertical-rounded fs-5'></i></button>
-                        </td>
+                        <td>Fashion</td>
+                        <td>124 Unit</td>
+                        <td class="fw-semibold">Rp 2.450.000</td>
+                        <td class="text-end"><button class="btn btn-sm text-secondary"><i class='bx bx-dots-vertical-rounded fs-5'></i></button></td>
                     </tr>
                     <tr>
-                        <td>#02</td>
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                <div class="icon-box"><i class='bx bx-mouse-alt'></i></div>
+                                <div class="icon-box"><i class='bx bx-mobile-alt'></i></div>
                                 <div>
-                                    <div class="fw-bold">Wireless Mouse G-Series</div>
-                                    <small class="text-muted">SKU: MS-104</small>
+                                    <div class="fw-bold">iPhone 15 Pro Max</div>
+                                    <small class="text-muted">SKU: IP-15PM</small>
                                 </div>
                             </div>
                         </td>
-                        <td>Aksesoris</td>
-                        <td class="fw-semibold">Rp 450.000</td>
-                        <td><span class="badge-status bg-inactive">Inactive</span></td>
-                        <td class="text-end">
-                            <button class="btn btn-sm text-secondary p-0"><i class='bx bx-dots-vertical-rounded fs-5'></i></button>
-                        </td>
+                        <td>Gadget</td>
+                        <td>45 Unit</td>
+                        <td class="fw-semibold">Rp 24.999.000</td>
+                        <td class="text-end"><button class="btn btn-sm text-secondary"><i class='bx bx-dots-vertical-rounded fs-5'></i></button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="table-footer">
-            <div id="infoDiv"></div>
-            <div id="pagingDiv"></div>
+            <div id="infoPlacement"></div>
+            <div id="pagingPlacement"></div>
         </div>
 
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
 <script>
     $(document).ready(function() {
-        const table = $('#mainTable').DataTable({
-            // 't' untuk table, 'i' untuk info, 'p' untuk pagination
-            dom: 't<"table-footer-inner"ip>',
+        const table = $('#premiumTable').DataTable({
+            dom: 'Bfrtip', // Inisialisasi Buttons
+            buttons: [
+                { extend: 'excel', className: 'd-none', title: 'Data Produk' },
+                { extend: 'pdf', className: 'd-none', title: 'Data Produk' },
+                { extend: 'print', className: 'd-none', title: 'Data Produk' }
+            ],
             language: {
                 info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
                 paginate: {
@@ -270,16 +273,21 @@
             },
             pageLength: 10,
             drawCallback: function() {
-                // Memindahkan elemen bawaan DT ke dalam kontainer kustom agar layout presisi
-                $('.dataTables_info').appendTo('#infoDiv');
-                $('.dataTables_paginate').appendTo('#pagingDiv');
+                // Pindahkan info & pagination ke lokasi kustom
+                $('.dataTables_info').appendTo('#infoPlacement');
+                $('.dataTables_paginate').appendTo('#pagingPlacement');
             }
         });
 
-        // Search bar kustom
-        $('#customSearch').on('keyup', function() {
+        // FUNGSI SEARCH (Koneksi ke Input Kustom)
+        $('#customSearchInput').on('keyup', function() {
             table.search(this.value).draw();
         });
+
+        // FUNGSI EXPORT (Koneksi ke Dropdown Kustom)
+        $('#btn-print').on('click', function() { table.button(2).trigger(); });
+        $('#btn-excel').on('click', function() { table.button(0).trigger(); });
+        $('#btn-pdf').on('click', function() { table.button(1).trigger(); });
     });
 </script>
 
