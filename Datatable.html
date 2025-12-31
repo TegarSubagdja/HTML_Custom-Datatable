@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Orange Datatable - Final Polish</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-orange: #FF6B00;
+            --brand-orange-soft: #FFF1E7;
+            --brand-dark: #1E293B;
+            --brand-gray: #64748B;
+            --brand-border: #E2E8F0;
+            --bg-light: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F1F5F9;
+            padding: 3rem 1rem;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--brand-border);
+            overflow: hidden;
+        }
+
+        /* --- HEADER ACTIONS --- */
+        .header-toolbar {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--brand-border);
+        }
+
+        .search-control {
+            position: relative;
+            width: 320px;
+        }
+        .search-control i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--brand-gray);
+        }
+        .search-control input {
+            padding-left: 40px;
+            height: 42px;
+            border-radius: 8px;
+            border: 1px solid var(--brand-border);
+            background: var(--bg-light);
+        }
+        .search-control input:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+            background: #fff;
+        }
+
+        /* --- TABLE STYLE --- */
+        .table thead th {
+            background-color: var(--bg-light);
+            color: var(--brand-gray);
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--brand-border);
+        }
+        .table tbody td {
+            padding: 14px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--brand-border);
+            font-size: 14px;
+        }
+
+        /* --- FOOTER & PAGINATION (FIXED & TIDY) --- */
+        .table-footer {
+            padding: 1.25rem 1.5rem; /* Memberikan ruang napas yang cukup */
+            display: flex;
+            justify-content: space-between; /* Memaksa info kiri, pagination kanan */
+            align-items: center;
+            background: white;
+            border-top: none;
+        }
+
+        /* Info Text */
+        .dataTables_info {
+            font-size: 13px;
+            color: var(--brand-gray);
+            padding-top: 0 !important; /* Reset default DT padding */
+        }
+
+        /* Pagination Style */
+        .pagination {
+            margin-bottom: 0;
+            gap: 4px;
+        }
+        .page-item .page-link {
+            border: none;
+            background-color: var(--bg-light);
+            color: var(--brand-dark);
+            border-radius: 6px !important;
+            font-size: 13px;
+            font-weight: 500;
+            min-width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .page-item.active .page-link {
+            background-color: var(--brand-orange) !important;
+            color: white !important;
+            box-shadow: 0 4px 8px rgba(255, 107, 0, 0.25);
+        }
+        .page-item:not(.active) .page-link:hover {
+            background-color: var(--brand-orange-soft);
+            color: var(--brand-orange);
+        }
+        .page-item.disabled .page-link {
+            background-color: transparent;
+            color: #CBD5E1;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .bg-active { background: #DCFCE7; color: #166534; }
+        .bg-inactive { background: #F1F5F9; color: #475569; }
+
+        .btn-add {
+            background: var(--brand-orange);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .btn-add:hover { background: var(--brand-orange-dark); transform: translateY(-1px); color: #fff; }
+
+        /* Icon Container */
+        .icon-box {
+            width: 36px; height: 36px;
+            background: var(--brand-orange-soft);
+            color: var(--brand-orange);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="table-card">
+        
+        <div class="header-toolbar">
+            <div class="search-control">
+                <i class='bx bx-search'></i>
+                <input type="text" id="customSearch" class="form-control" placeholder="Cari nama produk...">
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button class="btn border-0 text-secondary fw-medium fs-7">
+                    <i class='bx bx-export me-1'></i> Export
+                </button>
+                <button class="btn-add">
+                    <i class='bx bx-plus me-1'></i> Tambah Baru
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="mainTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="40">ID</th>
+                        <th>Info Produk</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th>Status</th>
+                        <th class="text-end">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#01</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-box"><i class='bx bx-package'></i></div>
+                                <div>
+                                    <div class="fw-bold">Premium Headphone Z1</div>
+                                    <small class="text-muted">SKU: HP-001</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Elektronik</td>
+                        <td class="fw-semibold">Rp 1.500.000</td>
+                        <td><span class="badge-status bg-active">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm text-secondary p-0"><i class='bx bx-dots-vertical-rounded fs-5'></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#02</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-box"><i class='bx bx-mouse-alt'></i></div>
+                                <div>
+                                    <div class="fw-bold">Wireless Mouse G-Series</div>
+                                    <small class="text-muted">SKU: MS-104</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Aksesoris</td>
+                        <td class="fw-semibold">Rp 450.000</td>
+                        <td><span class="badge-status bg-inactive">Inactive</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm text-secondary p-0"><i class='bx bx-dots-vertical-rounded fs-5'></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-footer">
+            <div id="infoDiv"></div>
+            <div id="pagingDiv"></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        const table = $('#mainTable').DataTable({
+            // 't' untuk table, 'i' untuk info, 'p' untuk pagination
+            dom: 't<"table-footer-inner"ip>',
+            language: {
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    next: '<i class="bx bx-chevron-right"></i>',
+                    previous: '<i class="bx bx-chevron-left"></i>'
+                }
+            },
+            pageLength: 10,
+            drawCallback: function() {
+                // Memindahkan elemen bawaan DT ke dalam kontainer kustom agar layout presisi
+                $('.dataTables_info').appendTo('#infoDiv');
+                $('.dataTables_paginate').appendTo('#pagingDiv');
+            }
+        });
+
+        // Search bar kustom
+        $('#customSearch').on('keyup', function() {
+            table.search(this.value).draw();
+        });
+    });
+</script>
+
+</body>
+</html>
